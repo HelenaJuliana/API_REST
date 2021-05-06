@@ -1,28 +1,27 @@
 package com.desafio.resources;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.desafio.domain.Pessoa;
+import com.desafio.services.PessoaService;
 
 @RestController
 @RequestMapping(value="/pessoas")
 public class PessoaResource {
 	
+	@Autowired
+	private PessoaService service;
+	
 	@RequestMapping(method=RequestMethod.GET)
 	public ResponseEntity<List<Pessoa>> findALL(){
 		
-		Pessoa maria = new Pessoa("1","Maria Barros", "10243093570");
-		Pessoa pedro = new Pessoa("2","Pedro Silva", "12345678910");
-		
-		List<Pessoa> list = new ArrayList<>();
-		list.addAll(Arrays.asList(maria, pedro));
+		List<Pessoa> list = service.findALL();
 		return ResponseEntity.ok().body(list);
 		
 	}
