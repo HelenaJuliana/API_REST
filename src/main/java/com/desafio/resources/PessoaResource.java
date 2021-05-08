@@ -1,6 +1,7 @@
 package com.desafio.resources;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.desafio.domain.Pessoa;
+import com.desafio.dto.PessoaDTO;
 import com.desafio.services.PessoaService;
 
 @RestController
@@ -19,11 +21,14 @@ public class PessoaResource {
 	private PessoaService service;
 	
 	@RequestMapping(method=RequestMethod.GET)
-	public ResponseEntity<List<Pessoa>> findALL(){
+	public ResponseEntity<List<PessoaDTO>> findALL(){
 		
 		List<Pessoa> list = service.findALL();
-		return ResponseEntity.ok().body(list);
+		List<PessoaDTO> listDto = list.stream().map(x -> new PessoaDTO(x)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listDto);
 		
 	}
+	
+	
 
 }
