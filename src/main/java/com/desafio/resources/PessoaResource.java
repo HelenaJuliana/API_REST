@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +37,7 @@ public class PessoaResource {
 		
 	}
 	
+	//busca pessoa por ID
 	@RequestMapping(value = "/{id}", method=RequestMethod.GET)
 	public ResponseEntity<PessoaDTO> findById(@PathVariable String id) {
 		
@@ -43,7 +46,7 @@ public class PessoaResource {
 	}
 
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Void> insert(@RequestBody PessoaDTO objDto){
+	public ResponseEntity<Void> insert(@RequestBody @Valid PessoaDTO objDto){
 		Pessoa obj = service.fromDTO(objDto);
 		obj = service.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
@@ -52,8 +55,22 @@ public class PessoaResource {
 		
 	}
 	
+	@RequestMapping(value = "/{id}", method=RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable String id) {
+	        service.delete(id);
+			return ResponseEntity.noContent().build();			
+		}
 	
-	
+	@RequestMapping(value = "/{id}", method=RequestMethod.PUT)
+	public ResponseEntity<Void> update(@RequestBody @Valid PessoaDTO objDto, @PathVariable String id){
+		Pessoa obj = service.fromDTO(objDto);
+		obj.setId(id);
+		obj = service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		
+	    return ResponseEntity.created(uri).build();
+		
+	}
 	
 
 }

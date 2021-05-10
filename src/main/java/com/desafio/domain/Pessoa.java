@@ -2,17 +2,20 @@ package com.desafio.domain;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotEmpty;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-@Document(collection="pessoa")
+@Document(collection = "pessoa")
 public class Pessoa implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
 	String id;
+	@NotEmpty
 	String nome;
+	@NotEmpty
 	String cpf;
 
 	public Pessoa() {

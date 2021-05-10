@@ -11,7 +11,6 @@ import com.desafio.dto.PessoaDTO;
 import com.desafio.repository.PessoaRepository;
 import com.desafio.services.exception.ObjectNotFoundException;
 
-import java.util.Optional;
 
 @Service
 public class PessoaService {
@@ -27,7 +26,7 @@ public class PessoaService {
 	public Pessoa findById(String id)  {
 		Pessoa pessoa = repo.findAllById(id);
 		if (pessoa == null) {
-		throw new ObjectNotFoundException("");
+		throw new ObjectNotFoundException("Objeto não encontrado");
 		}
 		return pessoa;
 		}
@@ -37,13 +36,30 @@ public class PessoaService {
 		
 	}
 	
+	public void delete (String id) {
+		findById(id);
+		repo.deleteById(id);
+		
+	}
+	
+	public Pessoa update(Pessoa obj) {
+		Pessoa newOBJ = repo.findAllById(obj.getId());
+		updateData(newOBJ, obj);
+		return (Pessoa) repo.save(newOBJ);
+	}
+	
+	private void updateData(Pessoa newOBJ, Pessoa obj) {
+		newOBJ.setNome(obj.getNome());
+		newOBJ.setCPF(obj.getCPF());
+		
+	}
+
 	public Pessoa fromDTO(PessoaDTO objDto) {
 		return new Pessoa(objDto.getId(), objDto.getNome(), objDto.getCpf());
 		
 	}
-		
 	
-}
+	}
 	
 
 

@@ -4,41 +4,29 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collection = "conta")
 public class ContaBancaria implements Serializable {
 	@Id
-	private Long idConta;
+	@NotEmpty
+	private static Long idConta;
 	private static final long serialVersionUID = 1L;
 	private int saldo;
-    private Pessoa pessoa;
-    private double limiteSaqueDiario;
-    private static int contador;
-    private Date dataCriacao;
-    private List<Transacao> transacoes;
-    
-    
-    public ContaBancaria(Pessoa pessoa) {
-    	idConta = (long) ContaBancaria.contador++;
-        this.pessoa = pessoa;
-    }
-	
- public Long getIdConta() {
+	private Pessoa pessoa;
+	private Date dataCriacao;
+	private List<Transacao> transacoes;
+	private boolean flagAtivo;
+
+	public Long getIdConta() {
 		return idConta;
 	}
 
 	public void setIdConta(Long idConta) {
 		this.idConta = idConta;
-	}
-
-	public double getLimiteSaqueDiario() {
-		return limiteSaqueDiario;
-	}
-
-	public void setLimiteSaqueDiario(double limiteSaqueDiario) {
-		this.limiteSaqueDiario = limiteSaqueDiario;
 	}
 
 	public Date getDataCriacao() {
@@ -69,44 +57,41 @@ public class ContaBancaria implements Serializable {
 		this.pessoa = pessoa;
 	}
 
-	public static void setContador(int contador) {
-		ContaBancaria.contador = contador;
-	}
-
 	// métodos
-    public int depositar(int valorDeposito) {
-        if (valorDeposito > 0) {
-            this.saldo = this.saldo + valorDeposito;
-            return this.saldo;
-        } else {
-            return this.saldo;
-        }
-    }
-
-    public int sacar(int valorSaque) {
-        if (this.saldo >= valorSaque) {
-            this.saldo = this.saldo - valorSaque;
-            return this.saldo;
-        } else {
-            return this.saldo;
-        }
-    }
-    
-    @Override
-	public String toString() {
-		return "ContaBancaria [idConta=" + idConta + ", saldo=" + saldo + ", pessoa=" + pessoa + ", limiteSaqueDiario="
-				+ limiteSaqueDiario + ", dataCriacao=" + dataCriacao + ", transacoes=" + transacoes + "]";
+	public int depositar(int valorDeposito) {
+		if (valorDeposito > 0) {
+			this.saldo = this.saldo + valorDeposito;
+			return this.saldo;
+		} else {
+			return this.saldo;
+		}
 	}
 
-    @Override
+	// conta valor negativo
+	public void saca(double valor) throws Exception {
+		if (valor > this.saldo) {
+			throw new Exception("sem saldo");
+		} else {
+			this.saldo -= valor;
+		}
+	}
+
+	public int sacar(int valorSaque) {
+		if (this.saldo >= valorSaque) {
+			this.saldo = this.saldo - valorSaque;
+			return this.saldo;
+		} else {
+			return this.saldo;
+		}
+	}
+
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((dataCriacao == null) ? 0 : dataCriacao.hashCode());
 		result = prime * result + ((idConta == null) ? 0 : idConta.hashCode());
-		long temp;
-		temp = Double.doubleToLongBits(limiteSaqueDiario);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((pessoa == null) ? 0 : pessoa.hashCode());
 		result = prime * result + saldo;
 		result = prime * result + ((transacoes == null) ? 0 : transacoes.hashCode());
@@ -132,8 +117,6 @@ public class ContaBancaria implements Serializable {
 				return false;
 		} else if (!idConta.equals(other.idConta))
 			return false;
-		if (Double.doubleToLongBits(limiteSaqueDiario) != Double.doubleToLongBits(other.limiteSaqueDiario))
-			return false;
 		if (pessoa == null) {
 			if (other.pessoa != null)
 				return false;
@@ -150,21 +133,24 @@ public class ContaBancaria implements Serializable {
 	}
 
 	public Pessoa getPessoa() {
-        return pessoa;
-    }
+		return pessoa;
+	}
 
-    public int getSaldo() {
-        return saldo;
-    }
+	public int getSaldo() {
+		return saldo;
+	}
 
-    public Long getId() {
-        return idConta;
-    }
+	public Long getId() {
+		return idConta;
+	}
 
-    
-    public static int getContador() {
-        return ContaBancaria.contador;
-    }
+	public boolean isFlagAtivo() {
+		return isFlagAtivo();
+	}
+
+	public void setFlagAtivo(boolean flagAtivo) {
+		this.flagAtivo = flagAtivo;
+	}
 
 	public ContaBancaria(Long idConta, int saldo, Pessoa pessoa, double limiteSaqueDiario, Date dataCriacao,
 			List<Transacao> transacoes) {
@@ -172,9 +158,15 @@ public class ContaBancaria implements Serializable {
 		this.idConta = idConta;
 		this.saldo = saldo;
 		this.pessoa = pessoa;
-		this.limiteSaqueDiario = limiteSaqueDiario;
 		this.dataCriacao = dataCriacao;
 		this.transacoes = transacoes;
 	}
-}
 
+	public ContaBancaria(Object object, int i, String string, String string2) {
+		this.idConta = idConta;
+		this.saldo = saldo;
+		this.pessoa = pessoa;
+		this.dataCriacao = dataCriacao;
+	}
+
+}

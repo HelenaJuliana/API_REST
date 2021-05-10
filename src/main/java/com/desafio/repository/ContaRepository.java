@@ -11,14 +11,15 @@ public interface ContaRepository<T> extends MongoRepository<ContaBancaria, Long>
 	
 	
 	@Query("update Conta c set c.saldo = c.saldo + ?1 where c.idConta = ?2")
-	void setFixedSaldoFor(double  quantidade, Long id);
+	void setFixedSaldoFor(double  valor , Long idConta);
 	
 	
-	ContaBancaria findByIdConta(Long id);
+	ContaBancaria findByIdConta(Long idConta);
 	
 	
 	@Query("update Conta c set c.saldo = c.saldo - ?1 where c.idConta = ?2")
-	void setFixedSaldo(double  quant, Long id);
+	void setFixedSaldo(double  quant, Long idConta);
 	
+
 
 }
